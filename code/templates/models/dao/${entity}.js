@@ -9,9 +9,7 @@ function save${Uentity}(new${Uentity}, app) { return new Promise((resolve, rejec
     var c${entity}s = app
     .monk.get('${entity}s')
     ,   ${entity}   = new app.modules.models.entities.${Uentity}(
-        new${Uentity}.name,
-        new${Uentity}.creationDate,
-        new${Uentity}.owner
+        new${Uentity}.property
     )
 
     var checkedData = ${entity}.checkData()
@@ -40,7 +38,7 @@ function save${Uentity}(new${Uentity}, app) { return new Promise((resolve, rejec
 function get${Uentity}(id, app) { return new Promise((resolve, reject)=>{
     var c${entity}s = app.monk.get('${entity}s')
 
-    c${entity}s.findOne(id).then(onSuccess).catch(onError)
+    c${Uentity}s.findOne(id).then(onSuccess).catch(onError)
 
     function onError(data) {
         reject({ status : data.status || 4000 })
@@ -63,7 +61,7 @@ function get${Uentity}(id, app) { return new Promise((resolve, reject)=>{
 function update${Uentity}(id, updateData, app) { return new Promise((resolve, reject)=>{
     var c${entity}s = app.monk.get('${entity}s')
 
-    c${entity}s.findOneAndUpdate(id, {
+    c${Uentity}s.findOneAndUpdate(id, {
         $set : updateData
     }).then(onSuccess).catch(onError)
 
@@ -85,7 +83,7 @@ function update${Uentity}(id, updateData, app) { return new Promise((resolve, re
  * @return {Promise}
  */
 function insert${Uentity}(c${entity}s, ${entity}) {
-    return c${entity}s.insert(${entity})
+    return c${Uentity}s.insert(${entity})
 }
 
 /**
@@ -95,7 +93,7 @@ function insert${Uentity}(c${entity}s, ${entity}) {
  * @return {undefined} [void function]
  */
 function has${Uentity}(c${entity}s, filter, fields, next) {
-    c${entity}s.find(filter, fields).then(next)
+    c${Uentity}s.find(filter, fields).then(next)
 }
 
 module.exports = {
