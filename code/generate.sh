@@ -13,18 +13,18 @@ envFile='templates/.env'
 core='src/'
 
 # Dist
-dist=../dist/code
+# dist=../dist/code
 function createDistPaths {
-    distControllersDelete=$dist/controllers/$1/delete.js
-    distControllersGet=$dist/controllers/$1/get.js
-    distControllers=$dist/controllers/$1/index.js
-    distControllersPatch=$dist/controllers/$1/patch.js
-    distControllersPost=$dist/controllers/$1/post.js
-    distControllersPut=$dist/controllers/$1/put.js
-    distRoutes=$dist/routes/$1/index.js
-    distModelsEntities=$dist/models/entities/$2.js
-    distModelsEntity=$dist/models/entities/
-    distModelsDaoFile=$dist/models/dao/$1.js
+    distControllersDelete="$dist/controllers/$1/delete.js"
+    distControllersGet="$dist/controllers/$1/get.js"
+    distControllers="$dist/controllers/$1/index.js"
+    distControllersPatch="$dist/controllers/$1/patch.js"
+    distControllersPost="$dist/controllers/$1/post.js"
+    distControllersPut="$dist/controllers/$1/put.js"
+    distRoutes="$dist/routes/$1/index.js"
+    distModelsEntities="$dist/models/entities/$2.js"
+    distModelsEntity="$dist/models/entities/"
+    distModelsDaoFile="$dist/models/dao/$1.js"
 }
 
 ## Reading new entity information
@@ -33,25 +33,31 @@ echo 'Welcome to the NodeJs Starter Generator! \nWhy be noob when you can be int
 
 # read -p "Type destination directory: " dist
 
-read -p "Type database url (localhost): " dbHost
+read -p "Step 1/7: Type destination path (../dist/code) " dist
+if [ -z "$dist" ]; then
+    dist='../dist/code';
+fi
+
+read -p "Step 2/7: Type database url (localhost): " dbHost
 if [ -z $dbHost ]; then
     dbHost='localhost';
 fi
-read -p "Type database name (nodejs-starter-database): " dbName
+
+read -p "Step 3/7: Type database name (nodejs-starter-database): " dbName
 if [ -z $dbName ]; then
     dbName='nodejs-starter-database';
 fi
 patternHostName=s/\$\{dbHost\}/"$dbHost"/g
 patternDatabaseName=s/\$\{dbName\}/"$dbName"/g
 
-echo "Step 1/4: Creating core files"
-mkdir -p $dist
-cp -r $core $dist
+echo "Step 4/7: Creating core files"
+mkdir -p "$dist"
+cp -r "$core" "$dist"
 
-echo "Step 2/4: Creating database configuration file"
-sed -e "$patternHostName" -e "$patternDatabaseName" $envFile > $dist/.env
+echo "Step 5/7: Creating database configuration file"
+sed -e "$patternHostName" -e "$patternDatabaseName" $envFile > "$dist/.env"
 
-echo "Step 3/4: Create system entities"
+echo "Step 6/7: Create system entities"
 while read -p "Type new entity or press enter to exit: " entity; do
     if [ -z $entity ]; then
         break
@@ -67,27 +73,27 @@ while read -p "Type new entity or press enter to exit: " entity; do
     createDistPaths $entity $Uentity
 
     echo "   |__ Creating $entity routes"
-    mkdir -p $dist/routes/$entity
-    sed -e "$pattern1" -e "$pattern2" $routes > $distRoutes
+    mkdir -p "$dist/routes/$entity"
+    sed -e "$pattern1" -e "$pattern2" $routes > "$distRoutes"
 
     echo "   |__ Creating $Uentity class"
-    mkdir -p $dist/models/entities
-    sed -e "$pattern1" -e "$pattern2" $modelsEntities > $distModelsEntities
+    mkdir -p "$dist/models/entities"
+    sed -e "$pattern1" -e "$pattern2" $modelsEntities > "$distModelsEntities"
 
     echo "   |__ Creating $entity controller files"
-    mkdir -p $dist/controllers/$entity
-    sed -e "$pattern1" -e "$pattern2" $controllersDelete > $distControllersDelete
-    sed -e "$pattern1" -e "$pattern2" $controllersGet > $distControllersGet
-    sed -e "$pattern1" -e "$pattern2" $controllers > $distControllers
-    sed -e "$pattern1" -e "$pattern2" $controllersPatch > $distControllersPatch
-    sed -e "$pattern1" -e "$pattern2" $controllersPost > $distControllersPost
-    sed -e "$pattern1" -e "$pattern2" $controllersPut > $distControllersPut
+    mkdir -p "$dist/controllers/$entity"
+    sed -e "$pattern1" -e "$pattern2" $controllersDelete > "$distControllersDelete"
+    sed -e "$pattern1" -e "$pattern2" $controllersGet > "$distControllersGet"
+    sed -e "$pattern1" -e "$pattern2" $controllers > "$distControllers"
+    sed -e "$pattern1" -e "$pattern2" $controllersPatch > "$distControllersPatch"
+    sed -e "$pattern1" -e "$pattern2" $controllersPost > "$distControllersPost"
+    sed -e "$pattern1" -e "$pattern2" $controllersPut > "$distControllersPut"
 
     echo "   |__ Creating $entity model"
-    mkdir -p $dist/models/dao
-    cp $modelsCommon $distModelsEntity
-    sed -e "$pattern1" -e "$pattern2" $modelsDao > $distModelsDaoFile
+    mkdir -p "$dist/models/dao"
+    cp "$modelsCommon" "$distModelsEntity"
+    sed -e "$pattern1" -e "$pattern2" $modelsDao > "$distModelsDaoFile"
 done
 
-echo "Step 4/4: Installing project dependencies"
-cd $dist && npm install
+echo "Step 7/7: Installing project dependencies"
+cd "$dist" && npm install
