@@ -5,8 +5,7 @@ function post(req, res, app){
      * Check mandatory keys from request body
      */
     var validation = app.modules.util.validator.keys([
-        'name',
-        'owner'
+        'property'
     ], req.body);
     if(true !== validation) return end(validation);
 
