@@ -66,6 +66,10 @@ while read -p "Type new entity: " entity; do
     echo "   |__ Creating new entity $entity..."
     createDistPaths $entity $Uentity
 
+    echo "   |__ Creating $entity routes"
+    mkdir -p $dist/routes/$entity
+    sed -e "$pattern1" -e "$pattern2" $routes > $distRoutes
+
     echo "   |__ Creating $Uentity class"
     mkdir -p $dist/models/entities
     sed -e "$pattern1" -e "$pattern2" $modelsEntities > $distModelsEntities
