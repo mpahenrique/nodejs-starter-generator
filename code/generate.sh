@@ -8,12 +8,11 @@ controllersPut='templates/controllers/${entity}/put.js'
 routes='templates/routes/${entity}/index.js'
 modelsEntities='templates/models/entities/${entity}.js'
 modelsDao='templates/models/dao/${entity}.js'
-core='src/*'
-coreD='src/.*'
+core='src/'
 
 # Dist
 function createDistPaths {
-    dist=../dist
+    dist=../dist/code
     distControllersDelete=$dist/controllers/$1/delete.js
     distControllersGet=$dist/controllers/$1/get.js
     distControllers=$dist/controllers/$1/index.js
@@ -41,7 +40,11 @@ pattern2=s/\$\{entity\}/"$entity"/
 echo "Creating new $entity entity..."
 createDistPaths $entity $Uentity
 
-echo "Step 1/4: Creating $entity controller files"
+echo "Step 1/4: Creating core files"
+mkdir -p $dist
+cp -r $core $dist
+
+echo "Step 2/4: Creating $entity controller files"
 mkdir -p $dist/controllers/$entity
 sed -e "$pattern1" -e "$pattern2" $controllersDelete > $distControllersDelete
 sed -e "$pattern1" -e "$pattern2" $controllersGet > $distControllersGet
@@ -50,15 +53,10 @@ sed -e "$pattern1" -e "$pattern2" $controllersPatch > $distControllersPatch
 sed -e "$pattern1" -e "$pattern2" $controllersPost > $distControllersPost
 sed -e "$pattern1" -e "$pattern2" $controllersPut > $distControllersPut
 
-echo "Step 2/4: Creating $entity model"
+echo "Step 3/4: Creating $entity model"
 mkdir -p $dist/models/dao
 sed -e "$pattern1" -e "$pattern2" $modelsDao > $distModelsDao
 
-echo "Step 3/4: Creating $Uentity class"
+echo "Step 4/4: Creating $Uentity class"
 mkdir -p $dist/models/entities
-sed -e "$pattern1" -e "$pattern2" $modelsEntities > $distModelsEntities
-
-echo "Step 4/4: Creating core files"
-cp -r $core $dist
-cp -r $coreD $dist
 sed -e "$pattern1" -e "$pattern2" $modelsEntities > $distModelsEntities
