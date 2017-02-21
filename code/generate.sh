@@ -52,7 +52,7 @@ echo "Step 2/4: Creating database configuration file"
 sed -e "$patternHostName" -e "$patternDatabaseName" $envFile > $dist/.env
 
 echo "Step 3/4: Create system entities"
-while read -p "Type new entity: " entity; do
+while read -p "Type new entity or press enter to exit: " entity; do
     if [ -z $entity ]; then
         break
     fi
