@@ -8,12 +8,13 @@ controllersPut='templates/controllers/${entity}/put.js'
 routes='templates/routes/${entity}/index.js'
 modelsEntities='templates/models/entities/${entity}.js'
 modelsDao='templates/models/dao/${entity}.js'
+modelsCommon='templates/models/entities/Common.js'
 envFile='templates/.env'
 core='src/'
 
 # Dist
+dist=../dist/code
 function createDistPaths {
-    dist=../dist/code
     distControllersDelete=$dist/controllers/$1/delete.js
     distControllersGet=$dist/controllers/$1/get.js
     distControllers=$dist/controllers/$1/index.js
@@ -22,7 +23,8 @@ function createDistPaths {
     distControllersPut=$dist/controllers/$1/put.js
     distRoutes=$dist/routes/$1/index.js
     distModelsEntities=$dist/models/entities/$2.js
-    distModelsDao=$dist/models/dao/$1.js
+    distModelsEntity=$dist/models/entities/
+    distModelsDaoFile=$dist/models/dao/$1.js
 }
 
 ## Reading new entity information
@@ -39,40 +41,49 @@ read -p "Type database name (nodejs-starter-database): " dbName
 if [ -z $dbName ]; then
     dbName='nodejs-starter-database';
 fi
+patternHostName=s/\$\{dbHost\}/"$dbHost"/g
+patternDatabaseName=s/\$\{dbName\}/"$dbName"/g
 
-read -p "Type new entity: " entity
-first=`echo $entity|cut -c1|tr [a-z] [A-Z]`
-second=`echo $entity|cut -c2-`
-Uentity=$first$second
-pattern1=s/\$\{Uentity\}/"$Uentity"/
-pattern2=s/\$\{entity\}/"$entity"/
-
-pattern3=s/\$\{dbHost\}/"$dbHost"/
-pattern4=s/\$\{dbName\}/"$dbName"/
-
-echo "Creating new $entity entity..."
-createDistPaths $entity $Uentity
-
-echo "Step 1/5: Creating core files"
+echo "Step 1/4: Creating core files"
 mkdir -p $dist
 cp -r $core $dist
 
-echo "Step 2/5: Creating database configuration file"
-sed -e "$pattern3" -e "$pattern4" $envFile > $dist/.env
+echo "Step 2/4: Creating database configuration file"
+sed -e "$patternHostName" -e "$patternDatabaseName" $envFile > $dist/.env
 
-echo "Step 3/5: Creating $Uentity class"
-mkdir -p $dist/models/entities
-sed -e "$pattern1" -e "$pattern2" $modelsEntities > $distModelsEntities
+echo "Step 3/4: Create system entities"
+while read -p "Type new entity: " entity; do
+    if [ -z $entity ]; then
+        break
+    fi
+    first=`echo $entity|cut -c1|tr [a-z] [A-Z]`
+    second=`echo $entity|cut -c2-`
+    Uentity=$first$second
+    pattern1=s/\$\{Uentity\}/"$Uentity"/g
+    pattern2=s/\$\{entity\}/"$entity"/g
 
-echo "Step 4/5: Creating $entity controller files"
-mkdir -p $dist/controllers/$entity
-sed -e "$pattern1" -e "$pattern2" $controllersDelete > $distControllersDelete
-sed -e "$pattern1" -e "$pattern2" $controllersGet > $distControllersGet
-sed -e "$pattern1" -e "$pattern2" $controllers > $distControllers
-sed -e "$pattern1" -e "$pattern2" $controllersPatch > $distControllersPatch
-sed -e "$pattern1" -e "$pattern2" $controllersPost > $distControllersPost
-sed -e "$pattern1" -e "$pattern2" $controllersPut > $distControllersPut
+    echo "-> $Uentity:"
+    echo "   |__ Creating new entity $entity..."
+    createDistPaths $entity $Uentity
 
-echo "Step 5/5: Creating $entity model"
-mkdir -p $dist/models/dao
-sed -e "$pattern1" -e "$pattern2" $modelsDao > $distModelsDao
+    echo "   |__ Creating $Uentity class"
+    mkdir -p $dist/models/entities
+    sed -e "$pattern1" -e "$pattern2" $modelsEntities > $distModelsEntities
+
+    echo "   |__ Creating $entity controller files"
+    mkdir -p $dist/controllers/$entity
+    sed -e "$pattern1" -e "$pattern2" $controllersDelete > $distControllersDelete
+    sed -e "$pattern1" -e "$pattern2" $controllersGet > $distControllersGet
+    sed -e "$pattern1" -e "$pattern2" $controllers > $distControllers
+    sed -e "$pattern1" -e "$pattern2" $controllersPatch > $distControllersPatch
+    sed -e "$pattern1" -e "$pattern2" $controllersPost > $distControllersPost
+    sed -e "$pattern1" -e "$pattern2" $controllersPut > $distControllersPut
+
+    echo "   |__ Creating $entity model"
+    mkdir -p $dist/models/dao
+    cp $modelsCommon $distModelsEntity
+    sed -e "$pattern1" -e "$pattern2" $modelsDao > $distModelsDaoFile
+done
+
+echo "Step 4/4: Installing project dependencies"
+cd $dist && npm install

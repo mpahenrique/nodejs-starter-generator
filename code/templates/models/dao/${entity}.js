@@ -1,16 +1,17 @@
 /**
  * [save${entity} save new ${entity}]
- * @param  {${entity}} new${entity} [${entity} object]
+ * @param  {${entity}} new${Uentity} [${entity} object]
  * @param  {NodeJsStarter object} [App object to provide methods to the dao]
  * @return {Promise}
  */
-function save${Uentity}(new${entity}, app) { return new Promise((resolve, reject)=>{
+function save${Uentity}(new${Uentity}, app) { return new Promise((resolve, reject)=>{
 
-    var c${entity}s = app.monk.get('${entity}s')
+    var c${entity}s = app
+    .monk.get('${entity}s')
     ,   ${entity}   = new app.modules.models.entities.${Uentity}(
-        new${entity}.name,
-        new${entity}.creationDate,
-        new${entity}.owner
+        new${Uentity}.name,
+        new${Uentity}.creationDate,
+        new${Uentity}.owner
     )
 
     var checkedData = ${entity}.checkData()
@@ -98,7 +99,7 @@ function has${Uentity}(c${entity}s, filter, fields, next) {
 }
 
 module.exports = {
-    get${entity} : get${entity},
-    save${entity} : save${entity},
-    update${entity} : update${entity}
+    get${Uentity} : get${Uentity},
+    save${Uentity} : save${Uentity},
+    update${Uentity} : update${Uentity}
 }
