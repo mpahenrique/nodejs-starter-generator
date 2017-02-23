@@ -9,6 +9,7 @@ routes='templates/routes/${entity}/index.js'
 modelsEntities='templates/models/entities/${entity}.js'
 modelsDao='templates/models/dao/${entity}.js'
 modelsCommon='templates/models/entities/Common.js'
+modelsDaoCommon='templates/models/dao/Common.js'
 envFile='templates/.env'
 core='src/'
 
@@ -21,9 +22,10 @@ function createDistPaths {
     distControllersPatch="$dist/controllers/$1/patch.js"
     distControllersPost="$dist/controllers/$1/post.js"
     distControllersPut="$dist/controllers/$1/put.js"
-    distRoutes="$dist/routes/$1/index.js"
+    distRoutes="$dist/routes/$1.js"
     distModelsEntities="$dist/models/entities/$2.js"
     distModelsEntity="$dist/models/entities/"
+    distModelsDao="$dist/models/dao/"
     distModelsDaoFile="$dist/models/dao/$1.js"
 }
 
@@ -52,6 +54,7 @@ patternDatabaseName=s/\$\{dbName\}/"$dbName"/g
 
 echo "Step 4/7: Creating core files"
 mkdir -p "$dist"
+mkdir -p "$dist/routes/"
 cp -r "$core" "$dist"
 
 echo "Step 5/7: Creating database configuration file"
@@ -73,7 +76,6 @@ while read -p "Type new entity or press enter to exit: " entity; do
     createDistPaths $entity $Uentity
 
     echo "   |__ Creating $entity routes"
-    mkdir -p "$dist/routes/$entity"
     sed -e "$pattern1" -e "$pattern2" $routes > "$distRoutes"
 
     echo "   |__ Creating $Uentity class"
@@ -91,7 +93,8 @@ while read -p "Type new entity or press enter to exit: " entity; do
 
     echo "   |__ Creating $entity model"
     mkdir -p "$dist/models/dao"
-    cp "$modelsCommon" "$distModelsEntity"
+    cp -r "$modelsCommon" "$distModelsEntity"
+    cp -r "$modelsDaoCommon" "$distModelsDao"
     sed -e "$pattern1" -e "$pattern2" $modelsDao > "$distModelsDaoFile"
 done
 
