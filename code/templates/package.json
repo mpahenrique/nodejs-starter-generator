@@ -1,21 +1,13 @@
 {
-  "name": "nodejs-starter-generator",
+  "name": "${projectName}",
   "version": "1.0.0",
-  "description": "NodeJs Starter Generator",
+  "description": "${projectName}",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@bitbucket.org/HenriqueAveiro/nodejs-starter.git"
-  },
-  "author": [
-    "Felipe Sacramento",
-    "Henrique Aveiro"
-  ],
+  "author": "",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/HenriqueAveiro/nodejs-starter#readme",
   "application": {
     "port": 4000,
     "modules": {
