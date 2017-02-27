@@ -38,37 +38,32 @@ echo 'Welcome to the NodeJs Starter Generator! \nWhy be noob when you can be int
 
 # read -p "Type destination directory: " dist
 
-read -p "Step 1/14: Type project name (nodejs-starter-generator) " projectName
+read -p "Step 1/13: Type project name (nodejs-starter-generator) " projectName
 if [ -z "$projectName" ]; then
     projectName='nodejs-starter-generator';
 fi
 
-read -p "Step 2/14: Type destination path (../dist/code) " dist
+read -p "Step 2/13: Type destination path (../dist/code) " dist
 if [ -z "$dist" ]; then
     dist='../dist/code';
 fi
 
-read -p "Step 3/14: Type database url (localhost): " dbHost
+read -p "Step 3/13: Type database url (localhost): " dbHost
 if [ -z $dbHost ]; then
     dbHost='localhost';
 fi
 
-read -p "Step 4/14: Type database user (root): " dbUsername
+read -p "Step 4/13: Type database user (root): " dbUsername
 if [ -z $dbUsername ]; then
     dbUsername='root';
 fi
 
-read -p "Step 5/14: Type database password (root): " dbPassword
+read -p "Step 5/13: Type database password (root): " dbPassword
 if [ -z $dbPassword ]; then
     dbPassword='root';
 fi
 
-read -p "Step 6/14: Type database name (nodejs-starter-generator-database): " patternDatabaseName
-if [ -z $patternDatabaseName ]; then
-    patternDatabaseName='nodejs-starter-generator-database';
-fi
-
-read -p "Step 7/14: Type database name (nodejs-starter-database): " dbName
+read -p "Step 6/13: Type database name (nodejs-starter-database): " dbName
 if [ -z $dbName ]; then
     dbName='nodejs-starter-database';
 fi
@@ -79,24 +74,24 @@ patternProjectName=s/\$\{projectName\}/"$projectName"/g
 patternDatabaseUsername=s/\$\{dbUsername\}/"$projectName"/g
 patternDatabasePassword=s/\$\{dbPassword\}/"$dbPassword"/g
 
-echo "Step 8/14: Creating core files"
+echo "Step 7/13: Creating core files"
 mkdir -p "$dist"
 mkdir -p "$dist/routes/"
 cp -r "$core" "$dist"
 
-echo "Step 9/14: Creating Dockerfile"
+echo "Step 8/13: Creating Dockerfile"
 sed -e "$patternProjectName" $Dockerfile > "$dist/../Dockerfile"
 
-echo "Step 10/14: Creating Makefile"
+echo "Step 9/13: Creating Makefile"
 sed -e "$patternProjectName" $Makefile > "$dist/../Makefile"
 
-echo "Step 11/14: Creating package.json"
+echo "Step 10/13: Creating package.json"
 sed -e "$patternProjectName" $packageJson > "$dist/package.json"
 
-echo "Step 12/14: Creating database configuration file"
+echo "Step 11/13: Creating database configuration file"
 sed -e "$patternDatabaseHostName" -e "$patternDatabaseName" -e "$patternDatabaseUsername" -e "$patternDatabasePassword" $envFile > "$dist/.env"
 
-echo "Step 13/14: Create system entities"
+echo "Step 12/13: Create system entities"
 while read -p "Type new entity or press enter to exit: " entity; do
     if [ -z $entity ]; then
         break
@@ -134,5 +129,5 @@ while read -p "Type new entity or press enter to exit: " entity; do
     sed -e "$pattern1" -e "$pattern2" $modelsDao > "$distModelsDaoFile"
 done
 
-echo "Step 14/14: Installing project dependencies"
+echo "Step 13/13: Installing project dependencies"
 cd "$dist" && npm install
